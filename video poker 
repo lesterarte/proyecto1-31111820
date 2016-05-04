@@ -1,0 +1,29 @@
+video poker game: reglas a seguir 
+
+
+- compila  			---	5%
+- Auesta 			---	5%
+- interfaz			---	20%
+- Gana				---	10%
+- Pierde			---	10%
+- Recupera/guarda estado final	---	15%
+- selecciona cartas		--- 	20%
+- Alietoriedad			---	15%
+
+penalisaciones: 
+
+- entrega Tarde				---	*0
+- no sigue estandares de programacion	---	*0.6
+
+
+reglas para premios
+- par jack o mejor	---	*1
+- Dos pares 		---	*2
+- trio 			---	*3
+- Escalera		---	*4
+- mismo manjar		---	*5
+-full house		---	*9
+- cuatro iguales	---	*25
+- Escalera 		---	*50
+- escalera real		---	*250
+

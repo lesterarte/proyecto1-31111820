@@ -3,21 +3,33 @@
 #include <ctime>
 #include <cstdio>
 #include <iostream>
+#include <string>
 
+
+using std::string;
 
 void mapainicial();
+void createDeck(int**,const int, const int);
+void deleteDeck(int**,const int);
 void createFiveCards(int **,const int, const int);
 void deleteFiveCards(int **,const int);
-void randomFiveCards(int **, const int, const int);
+void randomFiveCards(int **,int**);
 void flipMap();
 void showFiveCards(int **, const int, const int);
+void fullDeck(int **, const int, const int);
+void initFiveCards(int**,const int, const int);
+void otherFlipCards(int** ,int**,const int,char);
+int cardsTochange(int);
 
 int main(int argc,char* argv[])
 {
+	const int PALOS = 4;
+	const int CARTAS = 13;
 	const int FLIP_CARDS= 5;
 	const int ATRIBUTES_CARDS = 2; 
 	//almacena las 5 cartas con sus respectivos atributos
-	int** arrayFlipCards = new int*[FLIP_CARDS]; 
+	int** arrayFlipCards = new int*[FLIP_CARDS];
+	int ** arrayDeck = new int*[PALOS]; 
 	double apuestainicial = 0.0;
 	int contarCartasMover = 0;
 	int contarNumeros1 =0; 
@@ -26,79 +38,225 @@ int main(int argc,char* argv[])
 	int contarNumeros4 = 0; 
 	int contarNumeros5 = 0;  
 	char op_ingresoapuesta; 
-	char op_holdcards; 
+	char op_holdcards;
+	char op_changeCards;
+	char continueGame;
+	char capchCards[5] = {' ',' ',' ',' ',' '};
+	double gananciaAcumulada = 0.0; 
+	int cuantasCartasCambiar=0;
+
 
 	srand(time(NULL));
 	createFiveCards(arrayFlipCards,FLIP_CARDS, ATRIBUTES_CARDS);
-	randomFiveCards(arrayFlipCards,FLIP_CARDS,ATRIBUTES_CARDS);
-	
+	createDeck(arrayDeck,PALOS,CARTAS);
+	fullDeck(arrayDeck,PALOS,CARTAS);
+	initFiveCards(arrayFlipCards,FLIP_CARDS, ATRIBUTES_CARDS);
+	randomFiveCards(arrayDeck,arrayFlipCards);
+
+
 	initscr();
 	mapainicial();
 	move(33,84);
-	noecho(); 
-	
-	while(op_ingresoapuesta != '\n')
-	{
-		op_ingresoapuesta = getch();
-		if(op_ingresoapuesta > 47 && op_ingresoapuesta < 58)
-			addch(op_ingresoapuesta);
-	}
-	flipMap();
-	showFiveCards(arrayFlipCards,FLIP_CARDS,ATRIBUTES_CARDS);
-	mvprintw(29,44,"                                                             ");
-	mvprintw(30,44,"                                                           ");
-	mvprintw(33,44,"                                                         ");
 	noecho();
-	mvprintw(30,48,"Que cartas desea Mantener: ");
-	mvprintw(31,48,"Ejemplo:  CARTAS: 23 -> Carta 2 y carta 3 ");
-	mvprintw(33,42,"|                       CARTAS:   ");
 
-	while(op_holdcards != '\n')
+	while(continueGame != 'n' && continueGame != 'N')
 	{
-		op_holdcards = getch();
-		if(op_holdcards > 48 && op_holdcards < 54 && contarCartasMover <= 4)
+		
+
+		while(op_ingresoapuesta != '\n')
 		{
+			op_ingresoapuesta = getch();		
+			if(op_ingresoapuesta > 47 && op_ingresoapuesta < 58)
+			{
+				addch(op_ingresoapuesta);
+				//apuesta_valor.push_back(op_ingresoapuesta);
+				//mvprintw(34,14,apuesta_valor.c_str());
+			}			
+		}
+		op_ingresoapuesta=' ';
+
+		flipMap();
+		showFiveCards(arrayFlipCards,FLIP_CARDS,ATRIBUTES_CARDS);
+		mvprintw(29,44,"                                                             ");
+		mvprintw(30,44,"                                                           ");
+		mvprintw(33,44,"                                                         ");
+		noecho();
+		mvprintw(30,48,"Desea Cambiar alguna Carta?     ( si s/S ,  No  n/N )" );
+		move(33,54);
+
+		while(op_changeCards != 'n' && op_changeCards != 'N' && op_changeCards != 's'
+			&& op_changeCards != 'S')
+		{
+			op_changeCards = getch();
+			if(op_changeCards == 's' || op_changeCards == 'S')
+			{
+				mvprintw(30,48,"                                                      ");
+				mvprintw(30,48,"Que cartas desea Cambiar: ");
+				mvprintw(31,48,"Ejemplo:  CARTAS: 23 -> Carta 2 y carta 3 ");
+				mvprintw(33,42,"|                       CARTAS:   ");
+
+				while(op_holdcards != '\n')
+				{
+					op_holdcards = getch();				
+					if(op_holdcards > 48 && op_holdcards < 54 && contarCartasMover <= 4)
+					{
+
+						if(contarNumeros1 == 0 && op_holdcards == '1')
+						{
+							addch(op_holdcards);
+							contarCartasMover++; 
+							contarNumeros1++;
+							cuantasCartasCambiar++;
+
+							for(int i=0; i<5;i++)
+							{
+								if(capchCards[i] == ' ')
+								{
+									capchCards[i] = op_holdcards;
+									break;
+								}
+							}
+						}
+
+						if(contarNumeros2 == 0 && op_holdcards == '2')
+						{
+							addch(op_holdcards);
+							contarCartasMover++; 
+							contarNumeros2++;
+							cuantasCartasCambiar++;
+
+							for(int i=0; i<5;i++)
+							{
+								if(capchCards[i] == ' ')
+								{
+									capchCards[i] = op_holdcards;
+									break;
+								}
+							}
+						}
+
+						if(contarNumeros3 == 0 && op_holdcards == '3')
+						{
+							addch(op_holdcards);
+							contarCartasMover++; 
+							contarNumeros3++;
+							cuantasCartasCambiar++;
+
+							for(int i=0; i<5;i++)
+							{
+								if(capchCards[i] == ' ')
+								{
+									capchCards[i] = op_holdcards;
+									break;
+								}
+							}
+						}
+
+						if(contarNumeros4 == 0 && op_holdcards == '4')
+						{
+							addch(op_holdcards);
+							contarCartasMover++; 
+							contarNumeros4++;
+							cuantasCartasCambiar++;
+
+							for(int i=0; i<5;i++)
+							{
+								if(capchCards[i] == ' ')
+								{
+									capchCards[i] = op_holdcards;
+									break;
+								}
+							}
+						}
+
+						if(contarNumeros5 == 0 && op_holdcards == '5')
+						{
+							addch(op_holdcards);
+							contarCartasMover++; 
+							contarNumeros5++;
+							cuantasCartasCambiar++;
+
+							for(int i=0; i<5;i++)
+							{
+								if(capchCards[i] == ' ')
+								{
+									capchCards[i] = op_holdcards;
+									break;
+								}
+							}
+						}
+					}
+				}
 			
-			if(contarNumeros1 == 0 && op_holdcards == '1')
-			{
-				addch(op_holdcards);
-				contarCartasMover++; 
-				contarNumeros1++;
-			}
-			if(contarNumeros2 == 0 && op_holdcards == '2')
-			{
-				addch(op_holdcards);
-				contarCartasMover++; 
-				contarNumeros2++;
-			}
-			if(contarNumeros3 == 0 && op_holdcards == '3')
-			{
-				addch(op_holdcards);
-				contarCartasMover++; 
-				contarNumeros3++;
-			}
-			if(contarNumeros4 == 0 && op_holdcards == '4')
-			{
-				addch(op_holdcards);
-				contarCartasMover++; 
-				contarNumeros4++;
-			}
-			if(contarNumeros5 == 0 && op_holdcards == '5')
-			{
-				addch(op_holdcards);
-				contarCartasMover++; 
-				contarNumeros5++;
+
+				if(cuantasCartasCambiar==1)
+					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[0]);
+				if(cuantasCartasCambiar==2)
+					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[0]);
+					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[1]);
+				if(cuantasCartasCambiar==3)
+					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[0]);
+					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[1]);
+					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[2]);
+				if(cuantasCartasCambiar==4)
+					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[0]);
+					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[1]);
+					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[2]);
+					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[3]);
+				if(cuantasCartasCambiar==5)
+					randomFiveCards(arrayDeck,arrayFlipCards);
+				flipMap();
+				showFiveCards(arrayFlipCards,FLIP_CARDS,ATRIBUTES_CARDS);
 			}
 		}
-	}
+		mvprintw(30,48,"                                                      ");
+		mvprintw(30,48,"Desea Seguir Jugando?     ( si s/S ,  No  n/N )" );
+		mvprintw(31,48,"                                            ");
+		mvprintw(33,42,"                                          ");
+		move(33,54);
+
+		while(continueGame != 'n' && continueGame != 'N')
+		{
+			continueGame = getch();
+			if(continueGame == 's' || continueGame == 'S')
+			{
+				deleteFiveCards(arrayFlipCards,FLIP_CARDS);
+				deleteDeck(arrayDeck,PALOS);
+				createFiveCards(arrayFlipCards,FLIP_CARDS, ATRIBUTES_CARDS);
+				createDeck(arrayDeck,PALOS,CARTAS);
+				fullDeck(arrayDeck,PALOS,CARTAS);
+				initFiveCards(arrayFlipCards,FLIP_CARDS, ATRIBUTES_CARDS);
+				randomFiveCards(arrayDeck,arrayFlipCards);
+				op_ingresoapuesta = ' ';
+				op_holdcards = ' ';
+				contarNumeros1 = 0;
+				contarNumeros2 = 0;
+				contarNumeros3 = 0;
+				contarNumeros4 = 0;
+				contarCartasMover=0;
+				cuantasCartasCambiar=0;
+				op_changeCards = ' ';	
+
+				for(int i=0;i<5;i++)
+				{
+					capchCards[i] = ' ';
+				}
+
+				clear();
+				mapainicial();
+				move(33,84);
+				noecho();
+				break;
+			}
+		}
+	}//final del juego
 	
-	getch();
 	refresh();
 	endwin();
 	deleteFiveCards(arrayFlipCards,FLIP_CARDS);
+	deleteDeck(arrayDeck,PALOS);
 	return 0; 
 }
-
 
 
 void createFiveCards(int** fiveCards, const int cartas_mostradas, const int atributos_cartas_mostradas)
@@ -106,6 +264,22 @@ void createFiveCards(int** fiveCards, const int cartas_mostradas, const int atri
 	for(int i=0;i<cartas_mostradas;i++)
 	{
 		fiveCards[i]= new int[atributos_cartas_mostradas]; 
+	}
+}
+
+int cardsTochange(int cuantasCambiar)
+{
+	if(cuantasCambiar == 1)
+		return 1;
+
+
+}
+
+void createDeck(int** deck, const int palos, const int cartas)
+{
+	for(int i=0;i<palos;i++)
+	{
+		deck[i]= new int[cartas]; 
 	}
 }
 
@@ -118,17 +292,85 @@ void deleteFiveCards(int** fiveCards, const int cartas_mostradas)
 	delete[] fiveCards; 
 }// liberar memoria
 
-void randomFiveCards(int ** fiveCards, const int cartas_mostradas, const int atributos_cartas_mostradas)
+void deleteDeck(int** deck, const int palos)
 {
-	for(int i=0; i<cartas_mostradas; i++)
+	for(int i=0; i<palos; i++)
 	{
-		for(int j=0; j< atributos_cartas_mostradas; j++)
-		{
-			if(j==0)
+		delete[] deck[i];		
+	}	
+	delete[] deck; 
+}// liberar memoria
 
-				fiveCards[i][j] = rand() % 4 + 1;
-			else
-				fiveCards[i][j] = rand() % 13 + 1;
+void fullDeck(int ** deck, const int palos, const int cartas)
+{
+	for(int i =0; i<palos; i++)
+	{
+		for(int j=0; j<cartas; j++)
+		{
+			deck[i][j] = j+1; 
+		}
+	}
+}
+
+void randomFiveCards(int ** deck,int** fiveCards)
+{
+	int palo,carta;
+	int cont=0; 
+	int i=0;
+	int j=0;
+
+	while(cont != 5)
+	{
+		palo = rand() % 4;
+		carta = rand() % 13;
+		if(deck[palo][carta]  != 0)
+		{	
+			fiveCards[i][j] = palo+1;
+			fiveCards[i][j+1] = deck[palo][carta];
+			deck[palo][carta] = 0; 
+			i++;
+			cont++;
+		}
+	}
+}
+
+void otherFlipCards(int** deck,int** fiveCards,const int palos,char estaCarta)
+{
+	int cambiarEstaCarta = (estaCarta-'0')-1;
+	int palo,carta;
+	int j=0;
+
+	for(int i=0; i<palos;i++)
+	{
+		if( i == cambiarEstaCarta)
+		{
+			palo = rand() % 4;
+			carta = rand() % 13;
+
+			while(i<5)
+			{
+				if(deck[palo][carta]  != 0)
+				{	
+					fiveCards[i][j] = palo+1;
+					fiveCards[i][j+1] = deck[palo][carta];
+					deck[palo][carta] = 0; 
+					break;
+				}	
+				palo = rand() %4;
+				carta = rand() %13;			
+			}
+			break;
+		}
+	}
+}
+
+void initFiveCards(int** fiveCards,const int palo, const int carta)
+{
+	for(int i=0; i<palo; i++)
+	{
+		for(int j=0; j<carta; j++)
+		{
+			fiveCards[i][j] = 0; 
 		}
 	}
 }
@@ -295,22 +537,23 @@ void mapainicial()
 	mvprintw(18,1,"|  Cuatro Iguales   = X 25  | ");
 	mvprintw(19,1,"|  Escalera M/Palo  = X 50  | ");
 	mvprintw(20,1,"|  Escalera Real    = X 250 | ");
-	mvprintw(21,1,"+---------------------------+ ");
+	mvprintw(21,1,"|                           |");
+	mvprintw(22,1,"+---------------------------+ ");
 
-	mvprintw(24,1,"+---------------------------+ ");
-	mvprintw(25,1,"|         ACUMULADO         |");
-	mvprintw(26,1,"+---------------------------+ ");
-	mvprintw(27,1,"|    $       0.00           |");
-	mvprintw(28,1,"+---------------------------+ ");
-	mvprintw(30,1,"+---------------------------+ ");
-	mvprintw(31,1,"|         EN JUEGO          |");
-	mvprintw(32,1,"+---------------------------+ ");
-	mvprintw(33,1,"|    $       0.00           |");
-	mvprintw(34,1,"+---------------------------+ ");
+	mvprintw(25,1,"+---------------------------+ ");
+	mvprintw(26,1,"|         ACUMULADO         |");
+	mvprintw(27,1,"+---------------------------+ ");
+	mvprintw(28,1,"|    $       0              |");
+	mvprintw(29,1,"+---------------------------+ ");
+	mvprintw(31,1,"+---------------------------+ ");
+	mvprintw(32,1,"|         EN JUEGO          |");
+	mvprintw(33,1,"+---------------------------+ ");
+	mvprintw(34,1,"|    $       0              |");
+	mvprintw(35,1,"+---------------------------+ ");
 
 	mvprintw(28,42,"+-------------------------------------------------------------------------------------+ ");
 	mvprintw(29,42,"|                                  BIENVENIDO !!!!!                                   | ");
-	mvprintw(30,42,"|  Ingrese la cantidad Inicial Que desea Apostar:                                     | ");
+	mvprintw(30,42,"|  Ingrese Su Apuesta:        Ejemplo ->   0012 = $ 12                                | ");
 	mvprintw(31,42,"|                                                                                     | ");
 	mvprintw(32,42,"|                                                                                     | ");
 	mvprintw(33,42,"|                       APUESTA:      $                                               | ");

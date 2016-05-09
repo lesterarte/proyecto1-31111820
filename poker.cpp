@@ -64,7 +64,7 @@ int main(int argc,char* argv[])
 
 	initscr();
 	mapainicial();
-	move(33,84);
+	move(36,84);
 	noecho();
 
 	while(continueGame != 'n' && continueGame != 'N')
@@ -85,12 +85,12 @@ int main(int argc,char* argv[])
 
 		flipMap();
 		showFiveCards(arrayFlipCards,FLIP_CARDS,ATRIBUTES_CARDS);
-		mvprintw(29,44,"                                                             ");
-		mvprintw(30,44,"                                                           ");
-		mvprintw(33,44,"                                                         ");
+		mvprintw(32,44,"                                                             ");
+		mvprintw(33,44,"                                                           ");
+		mvprintw(36,44,"                                                         ");
 		noecho();
-		mvprintw(30,48,"Desea Cambiar alguna Carta?     ( si s/S ,  No  n/N )" );
-		move(33,54);
+		mvprintw(33,48,"Desea Cambiar alguna Carta?     ( si s/S ,  No  n/N )" );
+		move(36,54);
 
 		while(op_changeCards != 'n' && op_changeCards != 'N' && op_changeCards != 's'
 			&& op_changeCards != 'S')
@@ -98,10 +98,10 @@ int main(int argc,char* argv[])
 			op_changeCards = getch();
 			if(op_changeCards == 's' || op_changeCards == 'S')
 			{
-				mvprintw(30,48,"                                                      ");
-				mvprintw(30,48,"Que cartas desea Cambiar: ");
-				mvprintw(31,48,"Ejemplo:  CARTAS: 23 -> Carta 2 y carta 3 ");
-				mvprintw(33,42,"|                       CARTAS:   ");
+				mvprintw(33,48,"                                                      ");
+				mvprintw(33,48,"Que cartas desea Cambiar: ");
+				mvprintw(34,48,"Ejemplo:  CARTAS: 23 -> Carta 2 y carta 3 ");
+				mvprintw(36,42,"|                       CARTAS:   ");
 
 				while(op_holdcards != '\n')
 				{
@@ -220,11 +220,11 @@ int main(int argc,char* argv[])
 
 
 
-		mvprintw(30,49,"                                                      ");
-		mvprintw(30,48,"Desea Seguir Jugando?     ( si s/S ,  No  n/N )" );
-		mvprintw(31,48,"                                            ");
-		mvprintw(33,43,"                                          ");
-		move(33,55);
+		mvprintw(33,49,"                                                      ");
+		mvprintw(33,48,"Desea Seguir Jugando?     ( si s/S ,  No  n/N )" );
+		mvprintw(34,48,"                                            ");
+		mvprintw(36,43,"                                          ");
+		move(36,55);
 
 		while(continueGame != 'n' && continueGame != 'N')
 		{
@@ -255,7 +255,7 @@ int main(int argc,char* argv[])
 
 				clear();
 				mapainicial();
-				move(33,84);
+				move(36,84);
 				noecho();
 				break;
 			}
@@ -484,7 +484,7 @@ bool flush(int** fiveCards,const int palos)
 		}
 	}
 
-	if(nextnumber == 3)
+	if(nextnumber == 4)
 		return true; 
 	else
 		return false;
@@ -599,7 +599,42 @@ bool poker(int** fiveCards,const int palos)
 
 bool colorFlush(int** fiveCards,const int palos)
 {
+	int contpalos = 0;
+	int numeroMenor = fiveCards[0][1];
+	int nextnumber=0;
+	int valorpalo = fiveCards[0][0];
 
+	for(int i=1; i<palos; i++)
+	{
+		if(fiveCards[i][0] == valorpalo)
+			contpalos++;		
+	}  
+
+	if(contpalos == 4)
+	{
+		for(int i=1; i<palos; i++)
+		{
+			if(fiveCards[i][1] < numeroMenor)
+				numeroMenor = fiveCards[i][1];	
+		}
+
+		for(int i=0; i<palos; i++)
+		{
+			if(fiveCards[i][1] == numeroMenor+1)
+			{
+				nextnumber++; 
+				numeroMenor++;
+				i=-1;
+			}
+		}
+
+		if(nextnumber == 4)
+			return true; 
+		else
+			return false;
+	}
+	else
+		return false; 
 }
 
 bool royalFlush(int** fiveCards,const int palos)
@@ -826,10 +861,10 @@ void mapainicial()
 	mvprintw(12,1,"|  PAIR	 		   = X 1   | ");
 	mvprintw(13,1,"|  TWO PAIRS        = X 2   | ");
 	mvprintw(14,1,"|  THREE OF A KIND  = X 3   | ");
-	mvprintw(15,1,"|  FLUSH		       = X 4   | ");
+	mvprintw(15,1,"|  FLUSH            = X 4   | ");
 	mvprintw(16,1,"|  COLOR            = X 5   | ");
 	mvprintw(17,1,"|  FULL HOUSE       = X 9   | ");
-	mvprintw(18,1,"|  POKER  		   = X 25  | ");
+	mvprintw(18,1,"|  POKER            = X 25  | ");
 	mvprintw(19,1,"|  COLOR FLUSH      = X 50  | ");
 	mvprintw(20,1,"|  ROYAL FLUSH      = X 250 | ");
 	mvprintw(21,1,"|                           |");
@@ -846,15 +881,15 @@ void mapainicial()
 	mvprintw(34,1,"|    $       0              |");
 	mvprintw(35,1,"+---------------------------+ ");
 
-	mvprintw(28,42,"+-------------------------------------------------------------------------------------+ ");
-	mvprintw(29,42,"|                                  BIENVENIDO !!!!!                                   | ");
-	mvprintw(30,42,"|  Ingrese Su Apuesta:        Ejemplo ->   0012 = $ 12                                | ");
-	mvprintw(31,42,"|                                                                                     | ");
-	mvprintw(32,42,"|                                                                                     | ");
-	mvprintw(33,42,"|                       APUESTA:      $                                               | ");
-    mvprintw(34,42,"|                                                                                     | ");
-    mvprintw(35,42,"|                                                                                     | ");
-	mvprintw(36,42,"+-------------------------------------------------------------------------------------+ ");
+	mvprintw(31,42,"+-------------------------------------------------------------------------------------+ ");
+	mvprintw(32,42,"|                                  BIENVENIDO !!!!!                                   | ");
+	mvprintw(33,42,"|  Ingrese Su Apuesta:        Ejemplo ->   0012 = $ 12                                | ");
+	mvprintw(34,42,"|                                                                                     | ");
+	mvprintw(35,42,"|                                                                                     | ");
+	mvprintw(36,42,"|                       APUESTA:      $                                               | ");
+    mvprintw(37,42,"|                                                                                     | ");
+    mvprintw(38,42,"|                                                                                     | ");
+	mvprintw(39,42,"+-------------------------------------------------------------------------------------+ ");
 
 	mvprintw(9,35," ****************     ****************     ****************     ****************     ****************"); 
 	mvprintw(10,35,"******************   ******************   ******************   ******************   ****************** "); 

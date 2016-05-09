@@ -19,7 +19,15 @@ void showFiveCards(int **, const int, const int);
 void fullDeck(int **, const int, const int);
 void initFiveCards(int**,const int, const int);
 void otherFlipCards(int** ,int**,const int,char);
-int cardsTochange(int);
+bool pair(int**,const int,const int);
+bool twhoPairs(int**,const int,const int);
+bool trio(int**,const int,const int);
+bool flush(int**,const int,const int);
+bool color(int**,const int,const int);
+bool fullHouse(int**,const int,const int);
+bool poker(int**,const int,const int);
+bool colorFlush(int**,const int,const int);
+bool royalFlush(int**,const int,const int);
 
 int main(int argc,char* argv[])
 {
@@ -209,11 +217,14 @@ int main(int argc,char* argv[])
 				showFiveCards(arrayFlipCards,FLIP_CARDS,ATRIBUTES_CARDS);
 			}
 		}
-		mvprintw(30,48,"                                                      ");
+
+
+
+		mvprintw(30,49,"                                                      ");
 		mvprintw(30,48,"Desea Seguir Jugando?     ( si s/S ,  No  n/N )" );
 		mvprintw(31,48,"                                            ");
-		mvprintw(33,42,"                                          ");
-		move(33,54);
+		mvprintw(33,43,"                                          ");
+		move(33,55);
 
 		while(continueGame != 'n' && continueGame != 'N')
 		{
@@ -265,14 +276,6 @@ void createFiveCards(int** fiveCards, const int cartas_mostradas, const int atri
 	{
 		fiveCards[i]= new int[atributos_cartas_mostradas]; 
 	}
-}
-
-int cardsTochange(int cuantasCambiar)
-{
-	if(cuantasCambiar == 1)
-		return 1;
-
-
 }
 
 void createDeck(int** deck, const int palos, const int cartas)
@@ -373,6 +376,298 @@ void initFiveCards(int** fiveCards,const int palo, const int carta)
 			fiveCards[i][j] = 0; 
 		}
 	}
+}
+
+bool twhoPairs(int** fiveCards,const int palos)
+{
+	int cont = 0;
+	int cont2 = 0;
+	int ibloqueado= 0; 
+	int jbloqueado=0;
+	for(int i=0; i<palos; i++)
+	{
+		for(int j=i+1;j<palos;j++)
+		{
+			if(fiveCards[i][1] == fiveCards[j][1])
+			{
+				cont++;
+				ibloqueado = i; 
+				jbloqueado= j;
+			}
+		}
+	}  
+	
+	if(cont == 1)
+	{
+		for(int i=0; i<palos; i++)
+		{
+			for(int j=i+1;j<palos;j++)
+			{
+				if(i !=ibloqueado && j !=jbloqueado)
+				{
+					if(fiveCards[i][1] == fiveCards[j][1])
+						cont2++;
+				}
+			}
+		} 
+
+		if(cont2 == 1)
+			return true; 
+		else
+			return false; 
+	}	
+	else
+	{
+		return false; 
+	}	
+}
+
+bool pair(int** fiveCards,const int palos)
+{
+	int cont = 0;
+
+	for(int i=0; i<palos; i++)
+	{
+		for(int j=i+1;j<palos;j++)
+		{
+			if(fiveCards[i][1] == fiveCards[j][1])
+			{
+				cont++;
+			}
+		}
+	}  
+	if(cont == 1)
+		return true;
+	else
+		return false;
+}
+
+bool trio(int** fiveCards,const int palos)
+{
+	int cont = 0;
+
+	for(int i=0; i<palos; i++)
+	{
+		for(int j=i+1;j<palos;j++)
+		{
+			if(fiveCards[i][1] == fiveCards[j][1])
+			{
+				cont++;
+			}
+		}
+		if(cont == 2)
+			break; 
+	}  
+	if(cont == 2)
+		return true;
+	else
+		return false;
+}
+
+bool flush(int** fiveCards,const int palos)
+{
+	int numeroMenor = fiveCards[0][1];
+	int nextnumber=0;
+	for(int i=1; i<palos; i++)
+	{
+		if(fiveCards[i][1] < numeroMenor)
+			numeroMenor = fiveCards[i][1];	
+	}
+
+	for(int i=0; i<palos; i++)
+	{
+		if(fiveCards[i][1] == numeroMenor+1)
+		{
+			nextnumber++; 
+			numeroMenor++;
+			i=-1;
+		}
+	}
+
+	if(nextnumber == 3)
+		return true; 
+	else
+		return false;
+}
+
+bool color(int** fiveCards,const int palos)
+{
+	int contpalos = 0;
+	int contcartas =0;
+	int valorpalo =fiveCards[0][0];
+
+	for(int i=1; i<palos; i++)
+	{
+		if(fiveCards[i][0] == valorpalo)
+			contpalos++;		
+	}  
+
+	for(int i=0; i<palos; i++)
+	{
+		for(int j=i+1;j<palos;j++)
+		{
+			if(fiveCards[i][1] == fiveCards[j][1])
+			{
+				contcartas++;
+			}
+		}
+	}  
+
+	if(contpalos == 4 && contcartas == 0)
+		return true;
+	else
+		return false; 
+}
+
+bool fullHouse(int** fiveCards,const int palos)
+{
+	int cont1=0;
+	int cont2=0;
+	int muestra1=fiveCards[0][1];
+	int muestra2=0;
+
+	for(int i=1; i<palos;i++)
+	{
+		if(muestra1 != fiveCards[i][1])
+		{
+			muestra2 = fiveCards[i][1];
+			break;
+		}
+	}
+
+	for(int i=1; i<palos;i++)
+	{
+		if(muestra1 == fiveCards[i][1])
+		{
+			cont1++;
+		}
+	}
+
+	for(int i=1; i<palos;i++)
+	{
+		if(muestra2 == fiveCards[i][1])
+		{
+			cont2++;
+		}
+	}
+
+
+	if((cont1 == 2 && cont2 == 2) ||(cont1 == 1 && cont2 == 3))
+		return true; 
+	else
+		return false; 
+}
+
+bool poker(int** fiveCards,const int palos)
+{
+	int cont1=0;
+	int cont2=0;
+	int muestra1=fiveCards[0][1];
+	int muestra2=0;
+
+	for(int i=1; i<palos;i++)
+	{
+		if(muestra1 != fiveCards[i][1])
+		{
+			muestra2 = fiveCards[i][1];
+			break;
+		}
+	}
+
+	for(int i=1; i<palos;i++)
+	{
+		if(muestra1 == fiveCards[i][1])
+		{
+			cont1++;
+		}
+	}
+
+	for(int i=1; i<palos;i++)
+	{
+		if(muestra2 == fiveCards[i][1])
+		{
+			cont2++;
+		}
+	}
+
+
+	if((cont1 == 0 && cont2 == 4) || (cont1 == 3 && cont2 == 1))
+		return true; 
+	else
+		return false; 
+}
+
+bool colorFlush(int** fiveCards,const int palos)
+{
+
+}
+
+bool royalFlush(int** fiveCards,const int palos)
+{
+	int contpalos = 0;
+	int contcartas=0;
+	int valorpalo =fiveCards[0][0];
+
+	for(int i=1; i<palos; i++)
+	{
+		if(fiveCards[i][0] == valorpalo)
+			contpalos++;		
+	}  
+
+	if(contpalos == 4)
+	{
+		for(int i=0; i<palos;i++)
+		{
+			if(fiveCards[i][1] == 1)
+			{
+				contcartas++; 
+				break; 
+			}
+		}
+
+		for(int i=0; i<palos;i++)
+		{
+			if(fiveCards[i][1] == 10)
+			{
+				contcartas++; 
+				break; 
+			}
+		}
+
+		for(int i=0; i<palos;i++)
+		{
+			if(fiveCards[i][1] == 11)
+			{
+				contcartas++; 
+				break; 
+			}
+		}
+
+		for(int i=0; i<palos;i++)
+		{
+			if(fiveCards[i][1] == 12)
+			{
+				contcartas++; 
+				break; 
+			}
+		}
+
+		for(int i=0; i<palos;i++)
+		{
+			if(fiveCards[i][1] == 13)
+			{
+				contcartas++; 
+				break; 
+			}
+		}
+
+		if(contcartas == 5)
+			return true; 
+		else
+			return false; 
+	}
+	else
+		return false;
 }
 
 void flipMap()
@@ -528,25 +823,25 @@ void mapainicial()
 	mvprintw(9,1,"+---------------------------+ ");
 	mvprintw(10,1,"|     Ganancia x Mano       | ");
 	mvprintw(11,1,"+---------------------------+ ");
-	mvprintw(12,1,"|  par jack o mejor = X 1   | ");
-	mvprintw(13,1,"|  Dos Pares        = X 2   | ");
-	mvprintw(14,1,"|  Trio             = X 3   | ");
-	mvprintw(15,1,"|  Escalera         = X 4   | ");
-	mvprintw(16,1,"|  Mismo Manjar     = X 5   | ");
-	mvprintw(17,1,"|  Full House       = X 9   | ");
-	mvprintw(18,1,"|  Cuatro Iguales   = X 25  | ");
-	mvprintw(19,1,"|  Escalera M/Palo  = X 50  | ");
-	mvprintw(20,1,"|  Escalera Real    = X 250 | ");
+	mvprintw(12,1,"|  PAIR	 		   = X 1   | ");
+	mvprintw(13,1,"|  TWO PAIRS        = X 2   | ");
+	mvprintw(14,1,"|  THREE OF A KIND  = X 3   | ");
+	mvprintw(15,1,"|  FLUSH		       = X 4   | ");
+	mvprintw(16,1,"|  COLOR            = X 5   | ");
+	mvprintw(17,1,"|  FULL HOUSE       = X 9   | ");
+	mvprintw(18,1,"|  POKER  		   = X 25  | ");
+	mvprintw(19,1,"|  COLOR FLUSH      = X 50  | ");
+	mvprintw(20,1,"|  ROYAL FLUSH      = X 250 | ");
 	mvprintw(21,1,"|                           |");
 	mvprintw(22,1,"+---------------------------+ ");
 
 	mvprintw(25,1,"+---------------------------+ ");
-	mvprintw(26,1,"|         ACUMULADO         |");
+	mvprintw(26,1,"|          CREDITS          |");
 	mvprintw(27,1,"+---------------------------+ ");
 	mvprintw(28,1,"|    $       0              |");
 	mvprintw(29,1,"+---------------------------+ ");
 	mvprintw(31,1,"+---------------------------+ ");
-	mvprintw(32,1,"|         EN JUEGO          |");
+	mvprintw(32,1,"|             BET           |");
 	mvprintw(33,1,"+---------------------------+ ");
 	mvprintw(34,1,"|    $       0              |");
 	mvprintw(35,1,"+---------------------------+ ");

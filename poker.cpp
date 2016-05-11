@@ -4,8 +4,9 @@
 #include <cstdio>
 #include <iostream>
 #include <string>
+#include <sstream>
 
-
+using std::stringstream;
 using std::string;
 
 void mapainicial();
@@ -50,12 +51,12 @@ int main(int argc,char* argv[])
 	char op_changeCards;
 	char continueGame;
 	char capchCards[5] = {' ',' ',' ',' ',' '};
-	double gananciaAcumulada = 0.0; 
+	int creditos=0;
 	int cuantasCartasCambiar=0;
 	int apuestaCero=0;
+	int apuestaToInt=0;
+	int resultadosApuesta =0; 
 	string apuesta_valor;
-	int apuestaToInt = 0;
-
 
 	srand(time(NULL));
 	createFiveCards(arrayFlipCards,FLIP_CARDS, ATRIBUTES_CARDS);
@@ -67,12 +68,14 @@ int main(int argc,char* argv[])
 
 	initscr();
 	mapainicial();
-	move(36,84);
 	noecho();
 
 	while(continueGame != 'n' && continueGame != 'N')
 	{
-		
+
+		mvprintw(28,13,"              ");
+		mvprintw(28,13,"%d",creditos);
+		move(36,84);
 
 		while(op_ingresoapuesta != '\n')
 		{
@@ -89,7 +92,39 @@ int main(int argc,char* argv[])
 			}	
 		}
 		apuestaToInt = atoi(apuesta_valor.c_str());
-		mvprintw(34,14,apuesta_valor.c_str());
+
+		if(creditos != 0)
+		{
+			while((creditos - apuestaToInt) < 0 && (creditos - apuestaToInt) != 0 )
+			{
+
+				mvprintw(33,48,"                                   ");
+				mvprintw(33,45,"APUESTA INCORRECTA");
+				mvprintw(36,84, "               ");
+				move(36,84);
+
+				op_ingresoapuesta = ' ';
+				apuesta_valor.clear();
+				while(op_ingresoapuesta != '\n')
+				{
+					op_ingresoapuesta = getch();	
+					if(op_ingresoapuesta > 47 && op_ingresoapuesta < 58)
+					{
+						addch(op_ingresoapuesta);
+						apuesta_valor.push_back(op_ingresoapuesta);
+					}		
+				}
+				apuestaToInt = atoi(apuesta_valor.c_str());
+			}
+		}
+
+
+		if(apuestaToInt <= creditos)
+			creditos-=apuestaToInt;
+
+		mvprintw(34,14,"%d",apuestaToInt);
+		mvprintw(28,13,"               ");
+		mvprintw(28,13,"%d",creditos);
 		flipMap();
 		showFiveCards(arrayFlipCards,FLIP_CARDS,ATRIBUTES_CARDS);
 		mvprintw(32,44,"                                                             ");
@@ -105,6 +140,7 @@ int main(int argc,char* argv[])
 			op_changeCards = getch();
 			if(op_changeCards == 's' || op_changeCards == 'S')
 			{
+
 				mvprintw(33,48,"                                                      ");
 				mvprintw(33,48,"Que cartas desea Cambiar (si no desea cambiar cartas puede precionar ENTER");
 				mvprintw(34,48,"Ejemplo:  CARTAS: 23 -> Carta 2 y carta 3 ");
@@ -205,71 +241,105 @@ int main(int argc,char* argv[])
 			
 
 				if(cuantasCartasCambiar==1)
+				{
 					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[0]);
+				}
 				if(cuantasCartasCambiar==2)
+				{
 					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[0]);
 					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[1]);
+				}
+					
 				if(cuantasCartasCambiar==3)
+				{
 					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[0]);
 					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[1]);
 					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[2]);
+				}
+					
 				if(cuantasCartasCambiar==4)
+				{
 					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[0]);
 					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[1]);
 					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[2]);
 					otherFlipCards(arrayDeck,arrayFlipCards,FLIP_CARDS,capchCards[3]);
+				}
+					
 				if(cuantasCartasCambiar==5)
+				{
 					randomFiveCards(arrayDeck,arrayFlipCards);
+				}
+
 				flipMap();
 				showFiveCards(arrayFlipCards,FLIP_CARDS,ATRIBUTES_CARDS);
 			}
 		}
 		
+		
 		if(pair(arrayFlipCards,FLIP_CARDS))
 		{
 			mvprintw(28,80, "PAIR");
+			resultadosApuesta = apuestaToInt;
 		}
 
 		else if(twhoPairs(arrayFlipCards,FLIP_CARDS))
 		{
 			mvprintw(28,80, "TWO PAIRS");
+			resultadosApuesta = apuestaToInt*2;
 		}
 
 		else if(trio(arrayFlipCards,FLIP_CARDS))
 		{
 			mvprintw(28,75, "THREE OF A KIND");
+			resultadosApuesta = apuestaToInt*3;
 		}
 
 		else if(flush(arrayFlipCards,FLIP_CARDS))
 		{
 			mvprintw(28,80, "FLUSH");
+			resultadosApuesta =apuestaToInt*4;
 		}
 
 		else if(fullHouse(arrayFlipCards,FLIP_CARDS))
 		{
 			mvprintw(28,75, "FULL HOUSE");
+			resultadosApuesta =apuestaToInt*9;
 		}
 
 		else if(poker(arrayFlipCards,FLIP_CARDS))
 		{
 			mvprintw(28,80, "POKER");
+			resultadosApuesta =apuestaToInt*25;
 		}
 
 		else if(colorFlush(arrayFlipCards,FLIP_CARDS))
 		{
 			mvprintw(28,75, "COLOR FLUSH");
+			resultadosApuesta =apuestaToInt*50;
 		}
 
 		else if(royalFlush(arrayFlipCards,FLIP_CARDS))
 		{
 			mvprintw(28,75, "ROYAL FLUSH");
+			resultadosApuesta =apuestaToInt*250;
 		}
 
 		else if(color(arrayFlipCards,FLIP_CARDS))
 		{
 			mvprintw(28,80, "COLOR");
+			resultadosApuesta = apuestaToInt*5;
 		}
+		else 
+		{
+			mvprintw(28,80, "INTENTA OTRA VEZ");
+		}
+		
+		//Mostrar Ganancias
+		if(resultadosApuesta != 0)
+			creditos += resultadosApuesta;
 
+		mvprintw(28,13,"               ");
+		mvprintw(28,13,"%d",creditos);
 		mvprintw(33,49,"                                                                             ");
 		mvprintw(33,48,"Desea Seguir Jugando?     ( si s/S ,  No  n/N )" );
 		mvprintw(34,48,"                                            ");
@@ -281,6 +351,7 @@ int main(int argc,char* argv[])
 			continueGame = getch();
 			if(continueGame == 's' || continueGame == 'S')
 			{
+
 				deleteFiveCards(arrayFlipCards,FLIP_CARDS);
 				deleteDeck(arrayDeck,PALOS);
 				createFiveCards(arrayFlipCards,FLIP_CARDS, ATRIBUTES_CARDS);
@@ -299,7 +370,9 @@ int main(int argc,char* argv[])
 				cuantasCartasCambiar=0;
 				op_changeCards = ' ';
 				apuestaCero=0;
-
+				apuesta_valor.clear();
+				apuestaToInt=0;
+				resultadosApuesta=0;
 				for(int i=0;i<5;i++)
 				{
 					capchCards[i] = ' ';
@@ -320,7 +393,6 @@ int main(int argc,char* argv[])
 	deleteDeck(arrayDeck,PALOS);
 	return 0; 
 }
-
 
 void createFiveCards(int** fiveCards, const int cartas_mostradas, const int atributos_cartas_mostradas)
 {

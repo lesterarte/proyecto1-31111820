@@ -32,6 +32,7 @@ bool royalFlush(int**,const int);
 
 int main(int argc,char* argv[])
 {
+
 	const int PALOS = 4;
 	const int CARTAS = 13;
 	const int FLIP_CARDS= 5;
@@ -67,7 +68,17 @@ int main(int argc,char* argv[])
 
 
 	initscr();
-	mapainicial();
+	start_color();
+	attron(A_BOLD);
+	scrollok(curscr,TRUE);
+	init_pair(1, COLOR_RED,     COLOR_BLACK);
+    init_pair(2, COLOR_GREEN,   COLOR_BLACK);
+    init_pair(3, COLOR_CYAN,    COLOR_BLACK);
+    init_pair(4, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(5, COLOR_WHITE,   COLOR_BLACK);
+    init_pair(7,COLOR_WHITE, COLOR_BLACK);
+    bkgd(COLOR_PAIR(7) | A_BOLD);
+    mapainicial();
 	noecho();
 
 	while(continueGame != 'n' && continueGame != 'N')
@@ -121,10 +132,13 @@ int main(int argc,char* argv[])
 
 		if(apuestaToInt <= creditos)
 			creditos-=apuestaToInt;
-
+		attron(COLOR_PAIR(3));
 		mvprintw(34,14,"%d",apuestaToInt);
+		attroff(COLOR_PAIR(3));
 		mvprintw(28,13,"               ");
+		attron(COLOR_PAIR(3));
 		mvprintw(28,13,"%d",creditos);
+		attroff(COLOR_PAIR(3));
 		flipMap();
 		showFiveCards(arrayFlipCards,FLIP_CARDS,ATRIBUTES_CARDS);
 		mvprintw(32,44,"                                                             ");
@@ -276,62 +290,84 @@ int main(int argc,char* argv[])
 		}
 		
 		
+		
 		if(pair(arrayFlipCards,FLIP_CARDS))
 		{
-			mvprintw(28,80, "PAIR");
+			attron(COLOR_PAIR(3));
+			mvprintw(28,70, ".-*-.-*-.-*PAIR-*-.-*-.-*");
 			resultadosApuesta = apuestaToInt;
+			attroff(COLOR_PAIR(3));
+
 		}
 
 		else if(twhoPairs(arrayFlipCards,FLIP_CARDS))
 		{
-			mvprintw(28,80, "TWO PAIRS");
+			attron(COLOR_PAIR(3));
+			mvprintw(28,70, ".-*-.-*-.-*TWO PAIRS-*-.-*-.-*");
 			resultadosApuesta = apuestaToInt*2;
+			attroff(COLOR_PAIR(3));
 		}
 
 		else if(trio(arrayFlipCards,FLIP_CARDS))
 		{
-			mvprintw(28,75, "THREE OF A KIND");
+			attron(COLOR_PAIR(3));
+			mvprintw(28,65, ".-*-.-*-.-*THREE OF A KIND-*-.-*-.-*");
 			resultadosApuesta = apuestaToInt*3;
+			attroff(COLOR_PAIR(3));
 		}
 
 		else if(flush(arrayFlipCards,FLIP_CARDS))
 		{
-			mvprintw(28,80, "FLUSH");
+			attron(COLOR_PAIR(3));
+			mvprintw(28,70, "-*-.-*-.-*FLUSH-*-.-*-.-*");
 			resultadosApuesta =apuestaToInt*4;
+			attroff(COLOR_PAIR(3));
 		}
 
 		else if(fullHouse(arrayFlipCards,FLIP_CARDS))
 		{
-			mvprintw(28,75, "FULL HOUSE");
+			attron(COLOR_PAIR(3));
+			mvprintw(28,65, "-*-.-*-.-*FULL HOUSE-*-.-*-.-*");
 			resultadosApuesta =apuestaToInt*9;
+			attroff(COLOR_PAIR(3));
 		}
 
 		else if(poker(arrayFlipCards,FLIP_CARDS))
 		{
-			mvprintw(28,80, "POKER");
+			attron(COLOR_PAIR(3));
+			mvprintw(28,70, "-*-.-*-.-*POKER-*-.-*-.-*");
 			resultadosApuesta =apuestaToInt*25;
+			attroff(COLOR_PAIR(3));
 		}
 
 		else if(colorFlush(arrayFlipCards,FLIP_CARDS))
 		{
-			mvprintw(28,75, "COLOR FLUSH");
+			attron(COLOR_PAIR(3));
+			mvprintw(28,65, "-*-.-*-.-*COLOR FLUSH-*-.-*-.-*");
 			resultadosApuesta =apuestaToInt*50;
+			attroff(COLOR_PAIR(3));
 		}
 
 		else if(royalFlush(arrayFlipCards,FLIP_CARDS))
 		{
-			mvprintw(28,75, "ROYAL FLUSH");
+			attron(COLOR_PAIR(3));
+			mvprintw(28,65, "-*-.-*-.-*ROYAL FLUSH-*-.-*-.-*");
 			resultadosApuesta =apuestaToInt*250;
+			attroff(COLOR_PAIR(3));
 		}
 
 		else if(color(arrayFlipCards,FLIP_CARDS))
 		{
-			mvprintw(28,80, "COLOR");
+			attron(COLOR_PAIR(3));
+			mvprintw(28,70, "-*-.-*-.-*COLOR-*-.-*-.-*");
 			resultadosApuesta = apuestaToInt*5;
+			attroff(COLOR_PAIR(3));
 		}
 		else 
 		{
-			mvprintw(28,80, "INTENTA OTRA VEZ");
+			attron(COLOR_PAIR(3));
+			mvprintw(28,56, "-*-.-*-.-*INTENTA OTRA VEZ-*-.-*-.-*");
+			attroff(COLOR_PAIR(3));
 		}
 		
 		//Mostrar Ganancias
@@ -339,7 +375,9 @@ int main(int argc,char* argv[])
 			creditos += resultadosApuesta;
 
 		mvprintw(28,13,"               ");
+		attron(COLOR_PAIR(3));
 		mvprintw(28,13,"%d",creditos);
+		attroff(COLOR_PAIR(3));
 		mvprintw(33,49,"                                                                             ");
 		mvprintw(33,48,"Desea Seguir Jugando?     ( si s/S ,  No  n/N )" );
 		mvprintw(34,48,"                                            ");
@@ -891,6 +929,7 @@ bool royalFlush(int** fiveCards,const int palos)
 
 void flipMap()
 {
+	attron(COLOR_PAIR(2));	
 	mvprintw(9,35," ****************     ****************     ****************     ****************     ****************"); 
 	mvprintw(10,35,"*                *   *                *   *                *   *                *   *                * "); 
 	mvprintw(11,35,"*                *   *                *   *                *   *                *   *                * "); 
@@ -904,48 +943,56 @@ void flipMap()
 	mvprintw(19,35,"*                *   *                *   *                *   *                *   *                * "); 
 	mvprintw(20,35,"*                *   *                *   *                *   *                *   *                * "); 
 	mvprintw(21,35," ****************     ****************     ****************     ****************     ****************  "); 
+	attroff(COLOR_PAIR(2));	
 }
 
 void showFiveCards(int ** fiveCards, const int cartas_mostradas, const int atributos_cartas_mostradas)
 {
+	attron(A_BOLD);
 	for(int i=0; i<cartas_mostradas; i++)
 	{
 		if(fiveCards[i][0] == 1)
-		{		
+		{	attron(COLOR_PAIR(1));
 			mvprintw(13,36 +(21*i),"   ****  ****"); 
 			mvprintw(14,36 +(21*i),"  ************"); 
 			mvprintw(15,36 +(21*i),"   **********"); 
 			mvprintw(16,36 +(21*i),"     ******"); 
 			mvprintw(17,36 +(21*i),"       **"); 
+			attroff(COLOR_PAIR(1));
 		}
 		
 		if(fiveCards[i][0] == 2)
-		{		
+		{	attron(COLOR_PAIR(1));
 			mvprintw(13,36 +(21*i),"       *"); 
 			mvprintw(14,36 +(21*i),"      ***"); 
 			mvprintw(15,36 +(21*i),"    *******"); 
 			mvprintw(16,36 +(21*i),"      ***"); 
-			mvprintw(17,36 +(21*i),"       *"); 
+			mvprintw(17,36 +(21*i),"       *");
+			attroff(COLOR_PAIR(1)); 
 		}
 
 		if(fiveCards[i][0] == 3)
 		{
+			attron(COLOR_PAIR(6));
 			mvprintw(13,36 +(21*i),"       *"); 
 			mvprintw(14,36 +(21*i),"    *******"); 
 			mvprintw(15,36 +(21*i),"  ***********"); 
 			mvprintw(16,36 +(21*i),"  **** * ****");
 			mvprintw(17,36 +(21*i),"   *  ***  *");
 			mvprintw(18,36 +(21*i),"     ***** ");
+			attroff(COLOR_PAIR(6));
 		}
 
 		if(fiveCards[i][0]==4)
 		{
+			attron(COLOR_PAIR(6));
 			mvprintw(13,36 +(21*i),"      ***"); 
 			mvprintw(14,36 +(21*i),"     *****"); 
 			mvprintw(15,36 +(21*i),"  *** *** ***"); 
 			mvprintw(16,36 +(21*i),"  **** * ****");
 			mvprintw(17,36 +(21*i),"      ***  ");
 			mvprintw(18,36 +(21*i),"     ***** ");
+			attroff(COLOR_PAIR(6));
 		}
 	}	
 
@@ -1033,11 +1080,13 @@ void showFiveCards(int ** fiveCards, const int cartas_mostradas, const int atrib
 
 void mapainicial()
 {
-	mvprintw(1,29," *       *  *  * *    *****   ****          * *     ****   *   *  *****  * *"); 
-	mvprintw(2,29,"  *     *   *  *   *  *      *    *         *   *  *    *  *  *   *      *   *");
-	mvprintw(3,29,"   *   *    *  *    * ***    *    *         * *    *    *  **     ***    * *"); 
-	mvprintw(4,29,"    * *     *  *   *  *      *    *         *      *    *  *  *   *      *   *"); 
-	mvprintw(5,29,"     *      *  * *    *****   ****          *       ****   *   *  *****  *    *");  
+	attron(COLOR_PAIR(3));
+	mvprintw(1,26," **       **  **  ** **    ******   ****          ****     ****     **   **  ******  ** **"); 
+	mvprintw(2,26,"  **     **   **  **   **  **      **   **        **  **  **   **   ** **    **      **   **");
+	mvprintw(3,26,"   **   **    **  **   **  ****    **    **       *****   **    **  ** *     ****    ****"); 
+	mvprintw(4,26,"    ** **     **  **  **   **      ***  **        **      ***  **   **  **   **      **   **"); 
+	mvprintw(5,26,"     **       **  ** **    ******   ****          **       ****     **   **  ******  **   **");  
+	attroff(COLOR_PAIR(3));
 
 	mvprintw(9,1,"+---------------------------+ ");
 	mvprintw(10,1,"|     Ganancia x Mano       | ");
@@ -1053,7 +1102,7 @@ void mapainicial()
 	mvprintw(20,1,"|  ROYAL FLUSH      = X 250 | ");
 	mvprintw(21,1,"|                           |");
 	mvprintw(22,1,"+---------------------------+ ");
-
+	
 	mvprintw(25,1,"+---------------------------+ ");
 	mvprintw(26,1,"|          CREDITS          |");
 	mvprintw(27,1,"+---------------------------+ ");
@@ -1064,7 +1113,7 @@ void mapainicial()
 	mvprintw(33,1,"+---------------------------+ ");
 	mvprintw(34,1,"|    $       0              |");
 	mvprintw(35,1,"+---------------------------+ ");
-
+	
 	mvprintw(31,42,"+-------------------------------------------------------------------------------------+ ");
 	mvprintw(32,42,"|                                  BIENVENIDO !!!!!                                   | ");
 	mvprintw(33,42,"|  Ingrese Su Apuesta:                                                                | ");
@@ -1074,7 +1123,7 @@ void mapainicial()
     mvprintw(37,42,"|                                                                                     | ");
     mvprintw(38,42,"|                                                                                     | ");
 	mvprintw(39,42,"+-------------------------------------------------------------------------------------+ ");
-
+	attron(COLOR_PAIR(2));
 	mvprintw(9,35," ****************     ****************     ****************     ****************     ****************"); 
 	mvprintw(10,35,"******************   ******************   ******************   ******************   ****************** "); 
 	mvprintw(11,35,"******************   ******************   ******************   ******************   ****************** "); 
@@ -1087,8 +1136,11 @@ void mapainicial()
 	mvprintw(18,35,"******************   ******************   ******************   ******************   ****************** "); 
 	mvprintw(19,35,"******************   ******************   ******************   ******************   ****************** "); 
 	mvprintw(20,35,"******************   ******************   ******************   ******************   ****************** "); 
-	mvprintw(21,35," ****************     ****************     ****************     ****************     ****************  "); 
+	mvprintw(21,35," ****************     ****************     ****************     ****************     ****************  ");
+	attroff(COLOR_PAIR(2));	 
 	mvprintw(23,35," +--------------+     +--------------+     +--------------+     +--------------+     +--------------+  "); 
 	mvprintw(24,35," |       1      |     |       2      |     |       3      |     |       4      |     |       5      |"); 
-	mvprintw(25,35," +--------------+     +--------------+     +--------------+     +--------------+     +--------------+  "); 			 
+	mvprintw(25,35," +--------------+     +--------------+     +--------------+     +--------------+     +--------------+  "); 
+	attroff(COLOR_PAIR(2));			 
+	
 }

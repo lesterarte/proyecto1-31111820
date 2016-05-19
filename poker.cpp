@@ -433,7 +433,7 @@ int main(int argc,char* argv[])
 					getch();
 					flipMap();
 					showFiveCards(arrayFlipCards,FLIP_CARDS,ATRIBUTES_CARDS);
-					 cartaAleatoria = selectRandomCardMachine(cartaDeDoble-0);
+					 cartaAleatoria = selectRandomCardMachine(cartaDeDoble-'0');
 					showTwoCards(cartaDeDoble-'0', cartaAleatoria);
 
 					if(validateDoble(arrayFlipCards,cartaDeDoble-'0',cartaAleatoria))
@@ -738,58 +738,45 @@ void initFiveCards(int** fiveCards,const int palo, const int carta)
 
 bool twhoPairs(int** fiveCards,const int cantidadCartas)
 {
-	int cont1=0;
-	int cont2=0;
-	int cont3=0;
-	int muestra1 = fiveCards[0][1];
-	int muestra2 = 0;
-	int muestra3 = 0;
-
-	for(int i=1; i<cantidadCartas;i++)
+	int cont1 = 0;
+	int cont2 = 0;
+	int cont3 = 0;
+	int muestra = fiveCards[0][1];
+	int muestra2 = 0; 
+	int muestra3 =0;	
+	
+	for (int i = 1; i < cantidadCartas; i++)
 	{
-		if(muestra1 != fiveCards[i][1])
+		if(fiveCards[i][1] != muestra)
 		{
 			muestra2 = fiveCards[i][1];
 			break;
 		}
 	}
 
-	for(int i=1; i<cantidadCartas;i++)
+	for (int i = 1; i < cantidadCartas; i++)
 	{
-		if((muestra1 != fiveCards[i][1]) && muestra2 != fiveCards[i][1])
+		if(fiveCards[i][1] != muestra && fiveCards[i][1] != muestra2)
 		{
 			muestra3 = fiveCards[i][1];
 			break;
 		}
 	}
 
-	for(int i=1; i<cantidadCartas;i++)
+	for (int i = 0; i < cantidadCartas; i++)
 	{
-		if(muestra1 == fiveCards[i][1])
-		{
+		if(fiveCards[i][1] ==muestra)
 			cont1++;
-		}
-	}
-
-	for(int i=1; i<cantidadCartas;i++)
-	{
-		if(muestra2 == fiveCards[i][1])
-		{
+		if(fiveCards[i][1] ==muestra2)
 			cont2++;
-		}
-	}
-
-	for(int i=1; i<cantidadCartas;i++)
-	{
-		if(muestra3 == fiveCards[i][1])
-		{
+		if(fiveCards[i][1] == muestra3)
 			cont3++;
-		}
 	}
 
-	if((cont1 == 1 && cont2 == 2 && cont3 == 1)||
-	 (cont1 == 0 && cont2 == 2 && cont3 == 2))
-		return true;
+	if((cont1==1 && cont2 == 2 && cont3 == 2) 
+		|| (cont1==2 && cont2 == 1 && cont3 == 2) 
+		|| (cont1==2 && cont2 == 2 && cont3 == 1))
+		return true; 
 	else
 		return false;
 }
